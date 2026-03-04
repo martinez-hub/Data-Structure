@@ -175,6 +175,7 @@ bool BSTree<T>::isEmpty()
 	{
 		res = true;
 	}
+	return res;
 }
 
 /*
@@ -296,58 +297,57 @@ BSTNode<T> *BSTree<T>:: recursiveSearch(BSTNode<T> *node, T val)//Recursive supp
 template <class T>
 bool BSTree<T>::recursiveSearchForRemove(BSTNode<T>* node, T val)//Recursive support method for remove
 {
-	bool res;//Function Result
-	res = false;// Default value
-	BSTNode<T> *tmp, *found;
-	if ((node->getLeft() != 0) && (val < node->getInfo())) {
-		//it could be at the left
-		if (node->getLeft()->getInfo() == val)
-		//val is its left child
-		{
-			found = node->getLeft();
-			if (found->getRight() == 0)//No right child
-			{
-				node->setLeft(found->getLeft());
-			}
-			
-			else//right child
-			//find the lowest greater children
-			{
-				tmp = findLowest(found->getRight());
-				node->setLeft(tmp);
-				tmp->setLeft(found->getLeft());
-			}
-			delete found;
-			res = true;
+	if (node == 0) {
+		return false;
+	}
+
+	if (val.getName() < node->getInfo().getName()) {
+		BSTNode<T>* found = node->getLeft();
+		if (found == 0) {
+			return false;
+		}
+		if (found->getInfo().getName() != val.getName()) {
+			return recursiveSearchForRemove(found, val);
 		}
 
-		else
-		{
-			res = recursiveSearchForRemove(node->getLeft(), val);
-		}
-}
-		else if ((node->getRight() != 0) && (val > node->getInfo())) {
-			//it could be at right
-			if (node->getRight()->getInfo() == val)
-			//val is the right child
-			{
-				if (node->getRight() == 0)
-				//no right child
-					node->setRight(found->getLeft());
-				else
-				{ //find the lowest greater children
-					tmp = findLowest(found->getRight());
-					node->setRight(tmp);
-					tmp->setLeft(found->getLeft());
-					tmp->setRight(found->getRight());
-				}
-				delete found;
-				res = true;
+		if (found->getRight() == 0) {
+			node->setLeft(found->getLeft());
+		} else {
+			BSTNode<T>* tmp = findLowest(found->getRight());
+			node->setLeft(tmp);
+			tmp->setLeft(found->getLeft());
+			if (tmp != found->getRight()) {
+				tmp->setRight(found->getRight());
 			}
-			else //it could be at the right
-				res = recursiveSearchForRemove(node->getRight(), val);
 		}
-	return res;
+		delete found;
+		return true;
+	}
+
+	if (val.getName() > node->getInfo().getName()) {
+		BSTNode<T>* found = node->getRight();
+		if (found == 0) {
+			return false;
+		}
+		if (found->getInfo().getName() != val.getName()) {
+			return recursiveSearchForRemove(found, val);
+		}
+
+		if (found->getRight() == 0) {
+			node->setRight(found->getLeft());
+		} else {
+			BSTNode<T>* tmp = findLowest(found->getRight());
+			node->setRight(tmp);
+			tmp->setLeft(found->getLeft());
+			if (tmp != found->getRight()) {
+				tmp->setRight(found->getRight());
+			}
+		}
+		delete found;
+		return true;
+	}
+
+	return false;
 }
 /*
 	Method for find the lowest node in the tree visiting all the tree but going all the time

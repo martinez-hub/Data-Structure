@@ -21,7 +21,8 @@ class BSTNode{
 public:
 	BSTNode(); //Default constructor
 	BSTNode( BSTNode<T>*, T , BSTNode<T>*); //Special constructor
-	T getInfo(); //getInfo 
+	T& getInfo(); //getInfo
+	const T& getInfo() const; //getInfo const
 	BSTNode<T>* getLeft(); // getLeft
 	BSTNode<T>* getRight(); // getRight
 	//circDLList<Book>* getCirc(); 
@@ -66,8 +67,12 @@ BSTNode<T>::BSTNode(BSTNode<T> *l, T i, BSTNode<T> *r)
 	returns the info value
 *********/
 template <class T>
-T BSTNode<T>::getInfo()
-	{return info;}
+T& BSTNode<T>::getInfo()
+		{return info;}
+
+template <class T>
+const T& BSTNode<T>::getInfo() const
+		{return info;}
 
 /********
 	getright

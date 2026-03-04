@@ -20,7 +20,8 @@ public:
 	IntDLLNode(); //Default constructor
 	IntDLLNode( IntDLLNode<T>*, T , IntDLLNode<T>*); //Special constructor
 
-	T getInfo(); //getInfo
+	T& getInfo(); //getInfo
+	const T& getInfo() const; //getInfo const
 	//T getauthor();//getauthor
 	IntDLLNode<T>* getNext(); // getNext
 	IntDLLNode<T>* getPrev(); // getPrev
@@ -67,8 +68,11 @@ IntDLLNode<T>::IntDLLNode(IntDLLNode<T> *p, T i, IntDLLNode<T> *n)
 	returns the info value
 *********/
 template <class T>
-T IntDLLNode<T>::getInfo()
-	{return info;}
+T& IntDLLNode<T>::getInfo()
+		{return info;}
+template <class T>
+const T& IntDLLNode<T>::getInfo() const
+		{return info;}
 /**
 	template <class T>
 	T IntDLLNode<T>::getauthor()

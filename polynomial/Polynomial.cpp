@@ -182,7 +182,8 @@ Polynomial *Polynomial::operator* (const Polynomial &B)
 			mult->Coef[i + j] += Coef[i] * B.Coef[j];
 	return mult;
 	*/
-	int left = 0, right = 0, i, j, sum, newDegree = degree + B.degree;
+	int left = 0, right = 0, i, j, newDegree = degree + B.degree;
+	double sum;
 	Polynomial *mult = new Polynomial(newDegree);
 
 	while (left + right <= newDegree)
@@ -225,7 +226,8 @@ void Polynomial::operator *= (const Polynomial &B)
 	Coef = mult;
 	degree = newDegree;
 	*/
-	int left = 0, right = 0, i, j, sum, newDegree = degree + B.degree;
+		int left = 0, right = 0, i, j, newDegree = degree + B.degree;
+		double sum;
 	double *mult = new double[newDegree + 1];
 
 	while (left + right <= newDegree)
@@ -266,7 +268,6 @@ void Polynomial::operator*= (int val)
 	for (int i = 0; i <= degree; i++)
 		Coef[i] *= val;
 }
-
 
 
 

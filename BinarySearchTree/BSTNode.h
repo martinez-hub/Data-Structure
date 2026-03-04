@@ -93,13 +93,13 @@ void BSTNode<T>::setInfo(T i)
 	Points right attribute to the right child	
 ********/
 template <class T>
-void BSTNode<T>::setRight(BSTNode<T> *r = 0)
-	{ right = r;}
+void BSTNode<T>::setRight(BSTNode<T> *r)
+		{ right = r;}
 
 /********
 	setleft
 	Points right attribute to the left child	
 ********/
 template <class T>
-void BSTNode<T>::setLeft(BSTNode<T> *l = 0)
-	{ left = l;}
+void BSTNode<T>::setLeft(BSTNode<T> *l)
+		{ left = l;}

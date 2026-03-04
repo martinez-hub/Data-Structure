@@ -1,4 +1,4 @@
-i9mmki /**********************
+/**********************
 COMP 315 - Introduction to data structures
 Singly linked node
 This class implements the singly linked list using templates
@@ -123,7 +123,7 @@ void IntDLList<T>::addToTail(T val)
 {
 	if(tail!=0){
 		tail->setNext(new IntDLLNode<T>(tail,val,0));
-		tail - tail->getNext();
+		tail = tail->getNext();
 	}else
 		{
 			head = tail = new IntDLLNode<T>(tail,val,0);
@@ -178,26 +178,33 @@ bool IntDLList<T>::isEmpty(){
 /*this method are going to insert the new node by ascendent order */
 template <class T>
 void IntDLList<T>::sortInsert(T val){
-	if(head==0)	{addToHead(val);}
-	else {
-		IntDLLNode<T> *tmp, *tmp2;
-		tmp = head;
+	if (head == 0) {
+		addToHead(val);
+		return;
+	}
+	if (val > head->getInfo()) {
+		addToHead(val);
+		return;
+	}
+	if (val < tail->getInfo()) {
+		addToTail(val);
+		return;
+	}
 
-		while((val<tmp->getInfo()) && (tmp != tail)){
-			tmp2=tmp;
-			tmp=tmp->getNext();}
-	if((tmp == tail) && (val<tmp->getInfo())) {addToTail(val);}
-	else {
-		if((tmp==head) && (val>tmp->getInfo())){
-			addToHead(val);
-		}
-		else
-		{
-			tmp -> setPrev(new IntDLLNode<T>(tmp2,val,tmp));
-			tmp2->setNext(tmp->getPrev());
-		}
-}
-}
+	IntDLLNode<T>* prev = head;
+	IntDLLNode<T>* cur = head->getNext();
+	while ((cur != 0) && (val < cur->getInfo())) {
+		prev = cur;
+		cur = cur->getNext();
+	}
+
+	IntDLLNode<T>* node = new IntDLLNode<T>(prev, val, cur);
+	prev->setNext(node);
+	if (cur != 0) {
+		cur->setPrev(node);
+	} else {
+		tail = node;
+	}
 }
 //creates a new node and its inserted in pos
 /***************************************************************
@@ -209,29 +216,27 @@ void IntDLList<T>::sortInsert(T val){
  template <class T>
 void IntDLList<T>::insert(int pos, T val){
 
-	if (head == 0 or pos == 0)
+	if (head == 0 || pos <= 0)
 	{
 		addToHead(val);
 	}
 	else
 	{
-	IntDLLNode<T> *tmp, *tmp2;
-
-	tmp = head;
-	int i = 1;
-	while (i < pos)
-	{
-		tmp2 = tmp;
-		tmp = tmp->getNext();
-		if (tmp!=0)
-		{
-			tmp->setPrev(new IntDLLNode<T>(tmp2,val,tmp));
-			tmp = tmp->getPrev();
-			tmp2 -> setNext(tmp);
+		IntDLLNode<T>* prev = head;
+		int i = 1;
+		while (i < pos && prev->getNext() != 0) {
+			prev = prev->getNext();
+			i++;
 		}
-		i++;
-	}
-	tmp->setNext(new IntDLLNode<T>(val,tmp2->getNext()));
+
+		if (prev == tail) {
+			addToTail(val);
+		} else {
+			IntDLLNode<T>* cur = prev->getNext();
+			IntDLLNode<T>* node = new IntDLLNode<T>(prev, val, cur);
+			prev->setNext(node);
+			cur->setPrev(node);
+		}
 	}
 }
 /*while prtNode are not pointing to 0 this method are going

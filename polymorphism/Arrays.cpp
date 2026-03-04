@@ -18,8 +18,12 @@ Arrays::Arrays(int sz)
 //Copy Constructor
 Arrays::Arrays(const Arrays &OR)
 {
-	Arr = OR.Arr;
 	size = OR.size;
+	Arr = new int[size];
+	for (int i = 0; i < size; i++)
+	{
+		Arr[i] = OR.Arr[i];
+	}
 }
 
 

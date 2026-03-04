@@ -15,10 +15,14 @@ Arrays::Arrays(int sz)
 }
 
 //Copy Constructor
-Arrays::Arrays(Arrays &originalArray)
+Arrays::Arrays(const Arrays &originalArray)
 {
-	Arr = originalArray.Arr;
 	size = originalArray.size;
+	Arr = new int[size];
+	for (int i = 0; i < size; i++)
+	{
+		Arr[i] = originalArray.Arr[i];
+	}
 }
 
 
@@ -197,11 +201,17 @@ Arrays *Arrays::operator *(int val)
 //Overloading = Operator
 void Arrays::operator =(const Arrays &B)
 {
-	int i;
+	if (this == &B) {
+		return;
+	}
 
-	size = B.size;
+	if (size != B.size) {
+		delete []Arr;
+		size = B.size;
+		Arr = new int[size];
+	}
 
-	for(i=0; i< size; i++)
+	for (int i = 0; i < size; i++)
 	{
 		Arr[i] = B.Arr[i];
 	}

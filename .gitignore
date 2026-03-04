@@ -1,0 +1,10 @@
+# Build artifacts
+*.o
+*.out
+*.exe
+
+# Precompiled headers
+*.gch
+
+# macOS
+.DS_Store

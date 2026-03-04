@@ -160,19 +160,19 @@ void circDLList<T>::deleteFromHead()
 		IntDLLNode<T> *tmp;
 		tmp = head;
 		if (head == head->getNext())
-		{
-			//one node list
-			head = 0;
-		}
-		else
+			{
+				//one node list
+				head = 0;
+			}
+			else
 		{
 			//list with more than one node
 				head->getNext()->setPrev(head->getPrev());
 				head->getPrev()->setNext(head->getNext());
 
-				head = head->getNext();
-				delete tmp;
-		}
+					head = head->getNext();
+			}
+			delete tmp;
 	}
 }
 /*
@@ -237,30 +237,25 @@ void circDLList<T>::sortInsert(T val)
 	}
 	else
 	{
-		IntDLLNode<T> *tmp, *tmp2 = 0;
-		tmp = head;
-		while((val.getTitle() < tmp->getInfo().getTitle()) && (tmp->getNext() != head))
-		{
-			tmp2=tmp;
+		if (val.getTitle() > head->getInfo().getTitle()) {
+			addToHead(val);
+			return;
+		}
+
+		IntDLLNode<T> *prev = head;
+		IntDLLNode<T> *tmp = head->getNext();
+		while ((tmp != head) && (val.getTitle() < tmp->getInfo().getTitle())) {
+			prev = tmp;
 			tmp = tmp->getNext();
 		}
-		if((tmp->getNext() == head) && (val.getTitle() < tmp->getInfo().getTitle()))
-			{
-				addToTail(val);
-			}
-			else
-			{
-				if((tmp == head) && (val.getTitle() > tmp->getInfo().getTitle()))
-				{
-					addToHead(val);
-				}
-				else
-				{
-					IntDLLNode<T> *newNode = new IntDLLNode<T>(tmp2,val,tmp);
-					tmp2->setNext(newNode);
-					tmp->setPrev(newNode);
-				}
-			}
+		if ((tmp == head) && (val.getTitle() < prev->getInfo().getTitle())) {
+			addToTail(val);
+			return;
+		}
+
+		IntDLLNode<T> *newNode = new IntDLLNode<T>(prev, val, tmp);
+		prev->setNext(newNode);
+		tmp->setPrev(newNode);
 	}
 }
 
@@ -274,25 +269,27 @@ is this node and the prev of tmp too.
 template <class T>
 void circDLList<T>::insert(int pos, T val)
 {
-	IntDLLNode<T> *tmp, *tmp2;
-	tmp = head;
-	int i;
-
-	if (head == 0 or pos == 1)
+	if (head == 0 || pos <= 1)
 	{
 		addToHead(val);
 	}
 	else
 	{
-
-		for (i = 2; i <= pos - 1; i++)
-		{
-			tmp2 = tmp;
+		IntDLLNode<T>* prev = head;
+		IntDLLNode<T>* tmp = head->getNext();
+		int i = 2;
+		while (i < pos && tmp != head) {
+			prev = tmp;
 			tmp = tmp->getNext();
+			i++;
 		}
-		IntDLLNode<T> *newNode = new IntDLLNode<T>(tmp2, val, tmp);
-		tmp2->setNext(newNode);
-		tmp->setPrev(newNode);
+		if (tmp == head) {
+			addToTail(val);
+		} else {
+			IntDLLNode<T> *newNode = new IntDLLNode<T>(prev, val, tmp);
+			prev->setNext(newNode);
+			tmp->setPrev(newNode);
+		}
 	}
 }
 
@@ -350,78 +347,55 @@ void circDLList<T>::printRevList()
 template <class T>
 IntDLLNode<T>*circDLList<T>::searchNode(T i)
 {
-	IntDLLNode<T> *tmp = NULL;
-	tmp = head;
-	if (head == 0)
-	{
-		cout << "The list is empty" << endl;
+	if (head == 0) {
+		return 0;
 	}
-	else
-	{
-		while ((tmp != 0) && (tmp->getInfo().getTitle() != i.getTitle()))
-		{
-			tmp = tmp->getNext();
+
+	IntDLLNode<T> *tmp = head;
+	do {
+		if (tmp->getInfo().getTitle() == i.getTitle()) {
+			return tmp;
 		}
-		return tmp;
-	}
+		tmp = tmp->getNext();
+	} while (tmp != head);
+
+	return 0;
 }
 
 /* Function to delete a given node from the list */
 template <class T>
 void circDLList<T>::deleteNode(T i)
 {
-	IntDLLNode<T> *tmp, *tmp2 = NULL;
-	tmp = head;
-	tmp2 = tmp;
-	if (head == 0)
-	{//return NULL;
+	if (head == 0) {
+		return;
 	}
-	
-	while (tmp->getInfo().getTitle() != i.getTitle())
-	{
-		if (tmp->getNext() == head)
-		{
-			cout << "\nGiven node is not found"
-				" in the list!!!";
+
+	IntDLLNode<T> *tmp = head;
+	do {
+		if (tmp->getInfo().getTitle() == i.getTitle()) {
 			break;
 		}
-
-		tmp2 = tmp;
 		tmp = tmp->getNext();
+	} while (tmp != head);
+
+	if (tmp->getInfo().getTitle() != i.getTitle()) {
+		cout << "\nGiven node is not found in the list!!!";
+		return;
 	}
 
-	// Check if node is only node  
-	if (tmp->getNext() == head)
-	{
+	if (tmp->getNext() == tmp) {
+		delete tmp;
 		head = 0;
-		free(tmp);
-		//return NULL;
+		return;
 	}
 
-	// If more than one node, check if  
-	// it is first node  
-	if (tmp == head)
-	{
-		tmp2 = head;
-		while (tmp2->getNext() != head)
-			tmp2 = tmp2->getNext();
-		head = tmp->getNext();
-		tmp2->setNext(head);
-		free(tmp);
+	if (tmp == head) {
+		head = head->getNext();
 	}
 
-	// check if node is last node  
-	else if (tmp->getNext() == head)
-	{
-		tmp2->setNext(head);
-		free(tmp);
-	}
-	else
-	{
-		tmp2->setNext(tmp->getNext());
-		tmp->getNext()->setPrev(tmp2);
-		free(tmp);
-	}
+	tmp->getPrev()->setNext(tmp->getNext());
+	tmp->getNext()->setPrev(tmp->getPrev());
+	delete tmp;
 }
 
 

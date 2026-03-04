@@ -189,23 +189,26 @@ bool IntSLList<T>::isEmpty(){
 	******/
 template <class T>
 void IntSLList<T>::sortInsert(T val){
-	if(head==0)	{addToHead(val);}
-	else {
-		IntSLLNode<T> *tmp, *tmp2;
-		tmp = head;
+	if (head == 0) {
+		addToHead(val);
+		return;
+	}
+	if (val > head->getInfo()) {
+		addToHead(val);
+		return;
+	}
+	if (val < tail->getInfo()) {
+		addToTail(val);
+		return;
+	}
 
-		while((val<tmp->getInfo()) && (tmp != tail)){
-			tmp2=tmp;
-			tmp=tmp->getNext();}
-	if((tmp == tail) && (val<tmp->getInfo())) {addToTail(val);}
-	else {
-		if((tmp==head) && (val>tmp->getInfo())){
-			addToHead(val);
-		}
-		else{tmp2->setNext(new IntSLLNode<T>(val,tmp));
-		}
+	IntSLLNode<T>* prev = head;
+	IntSLLNode<T>* cur = head->getNext();
+	while ((cur != 0) && (val < cur->getInfo())) {
+		prev = cur;
+		cur = cur->getNext();
 	}
-	}
+	prev->setNext(new IntSLLNode<T>(val, cur));
 }
 
 //creates a new node and its inserted in pos
@@ -215,7 +218,7 @@ void IntSLList<T>::insert(int pos, T val){
 		verifica si el head = 0 o si el size de nodos es 1 pues 
 		inserta un nuevo nodo from head, de no ser asi se va por el else
 	****************************************************************/ 
-	if (head == 0 or pos == 0)
+	if (head == 0 || pos <= 0)
 	{
 		addToHead(val);	
 	} 
@@ -225,22 +228,24 @@ void IntSLList<T>::insert(int pos, T val){
 		para guardar la movida anterior del pointer principal
 		*/	 
 	{
-	IntSLLNode<T> *tmp, *tmp2;
-	
+	IntSLLNode<T> *tmp;
 	tmp = head;
 	int i = 1;
 		/* 
 		mientras i < pos mueve tmp al proximo nodo y utiliza tmp2 
 		para posicionarlo   en el nodo anterior al que se movio tmp
 		*/
-	while (i < pos)
+	while (i < pos && tmp->getNext() != 0)
 	{
-		tmp2 = tmp;
 		tmp = tmp->getNext();
 		i++;
 	}
-	
-	tmp->setNext(new IntSLLNode<T>(val,tmp2->getNext()));
+
+	if (tmp == tail) {
+		addToTail(val);
+	} else {
+		tmp->setNext(new IntSLLNode<T>(val,tmp->getNext()));
+	}
 	}
 
 }

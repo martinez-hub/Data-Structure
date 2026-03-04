@@ -56,7 +56,7 @@ public:
 	//printList(): prints all nodes in the list from tail to head
 	void printRevList();
 
-	void searchNode();
+	IntDLLNode<T>* searchNode(T i);
 
 private:
 	IntDLLNode<T> *head; //A pointer to the first node
@@ -155,19 +155,19 @@ void circDLList<T>::deleteFromHead()
 		IntDLLNode<T> *tmp;
 		tmp = head;
 		if (head == head->getNext())
-		{
-			//one node list
-			head = 0;
-		}
-		else
+			{
+				//one node list
+				head = 0;
+			}
+			else
 		{
 			//list with more than one node
 				head->getNext()->setPrev(head->getPrev());
 				head->getPrev()->setNext(head->getNext());
 
-				head = head->getNext();
-				delete tmp;
-		}
+					head = head->getNext();
+			}
+			delete tmp;
 	}
 }
 /*
@@ -224,37 +224,29 @@ of tmp2 are going to point that node and the previous of tmp too.
 template <class T>
 void circDLList<T>::sortInsert(T val)
 {
-	if(head == 0)
-	{
+	if (head == 0) {
 		addToHead(val);
+		return;
 	}
-	else
-	{
-		IntDLLNode<T> *tmp, *tmp2;
-		tmp = head;
-		while((val<tmp->getInfo()) && (tmp->getNext() != head))
-		{
-			tmp2=tmp;
-			tmp = tmp->getNext();
-		}
-		if((tmp->getNext() == head) && (val < tmp->getInfo()))
-			{
-				addToTail(val);
-			}
-			else
-			{
-				if((tmp == head) && (val > tmp->getInfo()))
-				{
-					addToHead(val);
-				}
-				else
-				{
-					IntDLLNode<T> *newNode = new IntDLLNode<T>(tmp2,val,tmp);
-					tmp2->setNext(newNode);
-					tmp->setPrev(newNode);
-				}
-			}
+	if (val > head->getInfo()) {
+		addToHead(val);
+		return;
 	}
+
+	IntDLLNode<T>* prev = head;
+	IntDLLNode<T>* cur = head->getNext();
+	while (cur != head && val < cur->getInfo()) {
+		prev = cur;
+		cur = cur->getNext();
+	}
+	if (cur == head && val < prev->getInfo()) {
+		addToTail(val);
+		return;
+	}
+
+	IntDLLNode<T>* newNode = new IntDLLNode<T>(prev, val, cur);
+	prev->setNext(newNode);
+	cur->setPrev(newNode);
 }
 
 /*
@@ -267,25 +259,27 @@ is this node and the prev of tmp too.
 template <class T>
 void circDLList<T>::insert(int pos, T val)
 {
-	IntDLLNode<T> *tmp, *tmp2;
-	tmp = head;
-	int i;
-
-	if (head == 0 or pos == 1)
+	if (head == 0 || pos <= 1)
 	{
 		addToHead(val);
 	}
 	else
 	{
-
-		for (i = 2; i <= pos - 1; i++)
-		{
-			tmp2 = tmp;
-			tmp = tmp->getNext();
+		IntDLLNode<T>* prev = head;
+		IntDLLNode<T>* cur = head->getNext();
+		int i = 2;
+		while (i < pos && cur != head) {
+			prev = cur;
+			cur = cur->getNext();
+			i++;
 		}
-		IntDLLNode<T> *newNode = new IntDLLNode<T>(tmp2, val, tmp);
-		tmp2->setNext(newNode);
-		tmp->setPrev(newNode);
+		if (cur == head) {
+			addToTail(val);
+		} else {
+			IntDLLNode<T> *newNode = new IntDLLNode<T>(prev, val, cur);
+			prev->setNext(newNode);
+			cur->setPrev(newNode);
+		}
 	}
 }
 
@@ -332,21 +326,19 @@ void circDLList<T>::printRevList()
 }
 
 template <class T>
-void circDLList<T>::searchNode(T i)
+IntDLLNode<T>* circDLList<T>::searchNode(T i)
 {
-	IntDLLNode<T> *tmp;
-	tmp = head;
-	if (head == 0)
-	{
-		cout << "The list is empty" << endl;
+	if (head == 0) {
+		return 0;
 	}
-	else
-	{
-		while (tmp != 0) && (tmp->getInfo != i)
-		{
-			tmp = tmp->getNext();
+
+	IntDLLNode<T> *tmp = head;
+	do {
+		if (tmp->getInfo() == i) {
+			return tmp;
 		}
-		return tmp;
-	}
-	delete tmp;
+		tmp = tmp->getNext();
+	} while (tmp != head);
+
+	return 0;
 }

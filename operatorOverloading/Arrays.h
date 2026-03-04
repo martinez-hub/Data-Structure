@@ -8,7 +8,7 @@ public:
 	
 	Arrays();				//Default constructor: it creates an Array of 100 positions
 	Arrays(int sz);			//Special constructor: it creates an Array of sz positions
-	Arrays(Arrays &B);		//Copy Constructor
+	Arrays(const Arrays &B);		//Copy Constructor
 	~Arrays();				//Destructor: deallocate memory
 	void readArray();		//readArray Method: Reads all positions of the array
 	void printArray();		//printArray Method: Prints all positions of the array
